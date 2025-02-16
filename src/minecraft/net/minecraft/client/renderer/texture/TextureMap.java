@@ -1,5 +1,7 @@
 package net.minecraft.client.renderer.texture;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -8,17 +10,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.StitcherException;
 import net.minecraft.client.resources.IResource;
@@ -41,6 +36,8 @@ import net.optifine.reflect.ReflectorForge;
 import net.optifine.shaders.ShadersTex;
 import net.optifine.util.CounterInt;
 import net.optifine.util.TextureUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TextureMap extends AbstractTexture implements ITickableTextureObject
 {
@@ -775,12 +772,13 @@ public class TextureMap extends AbstractTexture implements ITickableTextureObjec
         return j;
     }
 
-    private int detectMinimumSpriteSize(Map<Object, Object> p_detectMinimumSpriteSize_1_, IResourceManager p_detectMinimumSpriteSize_2_, int p_detectMinimumSpriteSize_3_)
+    private int detectMinimumSpriteSize(Map p_detectMinimumSpriteSize_1_, IResourceManager p_detectMinimumSpriteSize_2_, int p_detectMinimumSpriteSize_3_)
     {
         Map map = new HashMap();
 
-        for (Entry entry : p_detectMinimumSpriteSize_1_.entrySet())
+        for (Object o : p_detectMinimumSpriteSize_1_.entrySet())
         {
+            Entry entry = (Entry) o;
             TextureAtlasSprite textureatlassprite = (TextureAtlasSprite)entry.getValue();
             ResourceLocation resourcelocation = new ResourceLocation(textureatlassprite.getIconName());
             ResourceLocation resourcelocation1 = this.completeResourceLocation(resourcelocation);

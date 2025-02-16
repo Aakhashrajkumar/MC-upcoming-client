@@ -1,14 +1,12 @@
 package net.minecraft.client.renderer.chunk;
 
+import com.google.common.collect.Sets;
 import java.nio.FloatBuffer;
 import java.util.BitSet;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
-
-import com.google.common.collect.Sets;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCactus;
 import net.minecraft.block.BlockRedstoneWire;
@@ -200,8 +198,9 @@ public class RenderChunk
             boolean flag = Reflector.ForgeBlock_canRenderInLayer.exists();
             boolean flag1 = Reflector.ForgeHooksClient_setRenderLayer.exists();
 
-            for (BlockPosM blockposm : (Iterable<BlockPosM>)BlockPosM.getAllInBoxMutable(blockpos, blockpos1))
+            for (Object o : BlockPosM.getAllInBoxMutable(blockpos, blockpos1))
             {
+                BlockPosM blockposm = (BlockPosM) o;
                 IBlockState iblockstate = chunkcacheof.getBlockState(blockposm);
                 Block block = iblockstate.getBlock();
 

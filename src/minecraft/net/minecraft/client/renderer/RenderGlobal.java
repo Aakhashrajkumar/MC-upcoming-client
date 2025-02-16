@@ -1,5 +1,9 @@
 package net.minecraft.client.renderer;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -15,19 +19,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.gson.JsonSyntaxException;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockEnderChest;
@@ -118,6 +109,12 @@ import net.optifine.shaders.ShadowUtils;
 import net.optifine.shaders.gui.GuiShaderOptions;
 import net.optifine.util.ChunkUtils;
 import net.optifine.util.RenderChunkUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListener
 {
@@ -127,11 +124,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
     private static final ResourceLocation locationCloudsPng = new ResourceLocation("textures/environment/clouds.png");
     private static final ResourceLocation locationEndSkyPng = new ResourceLocation("textures/environment/end_sky.png");
     private static final ResourceLocation locationForcefieldPng = new ResourceLocation("textures/misc/forcefield.png");
-
-    /** A reference to the Minecraft object. */
     public final Minecraft mc;
-
-    /** The RenderEngine instance used by RenderGlobal */
     private final TextureManager renderEngine;
     private final RenderManager renderManager;
     private WorldClient theWorld;
@@ -139,30 +132,18 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
     private List<RenderGlobal.ContainerLocalRenderInformation> renderInfos = Lists.<RenderGlobal.ContainerLocalRenderInformation>newArrayListWithCapacity(69696);
     private final Set<TileEntity> setTileEntities = Sets.<TileEntity>newHashSet();
     private ViewFrustum viewFrustum;
-
-    /** The star GL Call list */
     private int starGLCallList = -1;
-
-    /** OpenGL sky list */
     private int glSkyList = -1;
-
-    /** OpenGL sky list 2 */
     private int glSkyList2 = -1;
     private VertexFormat vertexBufferFormat;
     private VertexBuffer starVBO;
     private VertexBuffer skyVBO;
     private VertexBuffer sky2VBO;
-
-    /**
-     * counts the cloud render updates. Used with mod to stagger some updates
-     */
     private int cloudTickCounter;
     public final Map<Integer, DestroyBlockProgress> damagedBlocks = Maps.<Integer, DestroyBlockProgress>newHashMap();
     private final Map<BlockPos, ISound> mapSoundPositions = Maps.<BlockPos, ISound>newHashMap();
     private final TextureAtlasSprite[] destroyBlockIcons = new TextureAtlasSprite[10];
     private Framebuffer entityOutlineFramebuffer;
-
-    /** Stores the shader group for the entity_outline shader */
     private ShaderGroup entityOutlineShader;
     private double frustumUpdatePosX = Double.MIN_VALUE;
     private double frustumUpdatePosY = Double.MIN_VALUE;
@@ -178,17 +159,9 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
     private final ChunkRenderDispatcher renderDispatcher = new ChunkRenderDispatcher();
     private ChunkRenderContainer renderContainer;
     private int renderDistanceChunks = -1;
-
-    /** Render entities startup counter (init value=2) */
     private int renderEntitiesStartupCounter = 2;
-
-    /** Count entities total */
     private int countEntitiesTotal;
-
-    /** Count entities rendered */
     private int countEntitiesRendered;
-
-    /** Count entities hidden */
     private int countEntitiesHidden;
     private boolean debugFixTerrainFrustum = false;
     private ClippingHelper debugFixedClippingHelper;
@@ -205,7 +178,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
     public Set chunksToResortTransparency = new LinkedHashSet();
     public Set chunksToUpdateForced = new LinkedHashSet();
     private Deque visibilityDeque = new ArrayDeque();
-    private List<RenderGlobal.ContainerLocalRenderInformation> renderInfosEntities = new ArrayList(1024);
+    private List renderInfosEntities = new ArrayList(1024);
     private List renderInfosTileEntities = new ArrayList(1024);
     private List renderInfosNormal = new ArrayList(1024);
     private List renderInfosEntitiesNormal = new ArrayList(1024);
@@ -272,9 +245,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
     }
 
-    /**
-     * Creates the entity outline shader to be stored in RenderGlobal.entityOutlineShader
-     */
     public void makeEntityOutlineShader()
     {
         if (OpenGlHelper.shadersSupported)
@@ -510,9 +480,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
     }
 
-    /**
-     * set null to clear
-     */
     public void setWorldAndLoadRenderers(WorldClient worldClientIn)
     {
         if (this.theWorld != null)
@@ -559,9 +526,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
     }
 
-    /**
-     * Loads all the renderers and sets up the basic settings usage
-     */
     public void loadRenderers()
     {
         if (this.theWorld != null)
@@ -772,8 +736,9 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             boolean flag8 = Shaders.isShadowPass && !this.mc.thePlayer.isSpectator();
             label926:
 
-            for (RenderGlobal.ContainerLocalRenderInformation renderglobal$containerlocalrenderinformation : this.renderInfosEntities)
+            for (Object o : this.renderInfosEntities)
             {
+                RenderGlobal.ContainerLocalRenderInformation renderglobal$containerlocalrenderinformation = (ContainerLocalRenderInformation) o;
                 Chunk chunk = renderglobal$containerlocalrenderinformation.renderChunk.getChunk();
                 ClassInheritanceMultiMap<Entity> classinheritancemultimap = chunk.getEntityLists()[renderglobal$containerlocalrenderinformation.renderChunk.getPosition().getY() / 16];
 
@@ -858,8 +823,9 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             TileEntitySignRenderer.updateTextRenderDistance();
             label1408:
 
-            for (RenderGlobal.ContainerLocalRenderInformation renderglobal$containerlocalrenderinformation1 : this.renderInfos)
+            for (Object o : this.renderInfosTileEntities)
             {
+                RenderGlobal.ContainerLocalRenderInformation renderglobal$containerlocalrenderinformation1 = (ContainerLocalRenderInformation) o;
                 List<TileEntity> list1 = renderglobal$containerlocalrenderinformation1.renderChunk.getCompiledChunk().getTileEntities();
 
                 if (!list1.isEmpty())
@@ -998,9 +964,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
     }
 
-    /**
-     * Gets the render info for use on the Debug screen
-     */
     public String getDebugInfoRenders()
     {
         int i = this.viewFrustum.renderChunks.length;
@@ -1019,9 +982,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         return String.format("C: %d/%d %sD: %d, %s", new Object[] {Integer.valueOf(j), Integer.valueOf(i), this.mc.renderChunksMany ? "(s) " : "", Integer.valueOf(this.renderDistanceChunks), this.renderDispatcher.getDebugInfo()});
     }
 
-    /**
-     * Gets the entities info for use on the Debug screen
-     */
     public String getDebugInfoEntities()
     {
         return "E: " + this.countEntitiesRendered + "/" + this.countEntitiesTotal + ", B: " + this.countEntitiesHidden + ", I: " + (this.countEntitiesTotal - this.countEntitiesHidden - this.countEntitiesRendered) + ", " + Config.getVersionDebug();
@@ -2108,9 +2068,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
     }
 
-    /**
-     * Checks if the given position is to be rendered with cloud fog
-     */
     public boolean hasCloudFog(double x, double y, double z, float partialTicks)
     {
         return false;
@@ -2603,11 +2560,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
     }
 
-    /**
-     * Draws the selection box for the player. Args: entityPlayer, rayTraceHit, i, itemStack, partialTickTime
-     *  
-     * @param execute If equals to 0 the method is executed
-     */
     public void drawSelectionBox(EntityPlayer player, MovingObjectPosition movingObjectPositionIn, int execute, float partialTicks)
     {
         if (execute == 0 && movingObjectPositionIn.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
@@ -2717,9 +2669,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         tessellator.draw();
     }
 
-    /**
-     * Marks the blocks in the given range for update
-     */
     private void markBlocksForUpdate(int x1, int y1, int z1, int x2, int y2, int z2)
     {
         this.viewFrustum.markBlocksForUpdate(x1, y1, z1, x2, y2, z2);
@@ -2741,10 +2690,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         this.markBlocksForUpdate(i - 1, j - 1, k - 1, i + 1, j + 1, k + 1);
     }
 
-    /**
-     * On the client, re-renders all blocks in this range, inclusive. On the server, does nothing. Args: min x, min y,
-     * min z, max x, max y, max z
-     */
     public void markBlockRangeForRenderUpdate(int x1, int y1, int z1, int x2, int y2, int z2)
     {
         this.markBlocksForUpdate(x1 - 1, y1 - 1, z1 - 1, x2 + 1, y2 + 1, z2 + 1);
@@ -2775,16 +2720,10 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
     }
 
-    /**
-     * Plays the specified sound. Arg: soundName, x, y, z, volume, pitch
-     */
     public void playSound(String soundName, double x, double y, double z, float volume, float pitch)
     {
     }
 
-    /**
-     * Plays sound to all near players except the player reference given
-     */
     public void playSoundToNearExcept(EntityPlayer except, String soundName, double x, double y, double z, float volume, float pitch)
     {
     }
@@ -2972,10 +2911,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
     }
 
-    /**
-     * Called on all IWorldAccesses when an entity is created or loaded. On client worlds, starts downloading any
-     * necessary textures. On server worlds, adds the entity to the entity tracker.
-     */
     public void onEntityAdded(Entity entityIn)
     {
         RandomEntities.entityLoaded(entityIn, this.theWorld);
@@ -2986,10 +2921,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
     }
 
-    /**
-     * Called on all IWorldAccesses when an entity is unloaded or destroyed. On client worlds, releases any downloaded
-     * textures. On server worlds, removes the entity from the entity tracker.
-     */
     public void onEntityRemoved(Entity entityIn)
     {
         RandomEntities.entityUnloaded(entityIn, this.theWorld);
@@ -3000,9 +2931,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
     }
 
-    /**
-     * Deletes all display lists
-     */
     public void deleteAllDisplayLists()
     {
     }

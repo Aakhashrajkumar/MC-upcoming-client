@@ -73,8 +73,6 @@ public class GameSettings
             return null;
         }
     };
-
-    /** GUI scale values */
     private static final String[] GUISCALES = new String[] {"options.guiScale.auto", "options.guiScale.small", "options.guiScale.normal", "options.guiScale.large"};
     private static final String[] PARTICLES = new String[] {"options.particles.all", "options.particles.decreased", "options.particles.minimal"};
     private static final String[] AMBIENT_OCCLUSIONS = new String[] {"options.ao.off", "options.ao.min", "options.ao.max"};
@@ -90,12 +88,8 @@ public class GameSettings
     public boolean anaglyph;
     public boolean fboEnable = true;
     public int limitFramerate = 120;
-
-    /** Clouds flag */
     public int clouds = 2;
     public boolean fancyGraphics = true;
-
-    /** Smooth Lighting */
     public int ambientOcclusion = 2;
     public List<String> resourcePacks = Lists.<String>newArrayList();
     public List<String> incompatibleResourcePacks = Lists.<String>newArrayList();
@@ -111,13 +105,7 @@ public class GameSettings
     public boolean allowBlockAlternatives = true;
     public boolean reducedDebugInfo = false;
     public boolean hideServerAddress;
-
-    /**
-     * Whether to show advanced information on item tooltips, toggled by F3+H
-     */
     public boolean advancedItemTooltips;
-
-    /** Whether to pause when the game loses focus, toggled by F3+P */
     public boolean pauseOnLostFocus = true;
     private final Set<EnumPlayerModelParts> setModelParts = Sets.newHashSet(EnumPlayerModelParts.values());
     public boolean touchscreen;
@@ -176,29 +164,17 @@ public class GameSettings
     public EnumDifficulty difficulty;
     public boolean hideGUI;
     public int thirdPersonView;
-
-    /** true if debug info should be displayed instead of version */
     public boolean showDebugInfo;
     public boolean showDebugProfilerChart;
     public boolean showLagometer;
-
-    /** The lastServer string. */
     public String lastServer;
-
-    /** Smooth Camera Toggle */
     public boolean smoothCamera;
     public boolean debugCamEnable;
     public float fovSetting;
     public float gammaSetting;
     public float saturation;
-
-    /** GUI scale */
     public int guiScale;
-
-    /** Determines amount of particles. 0 = All, 1 = Decreased, 2 = Minimal */
     public int particleSetting;
-
-    /** Game settings language */
     public String language;
     public boolean forceUnicodeFont;
     public int ofFogType = 1;
@@ -339,44 +315,22 @@ public class GameSettings
         this.forceUnicodeFont = false;
     }
 
-    /**
-     * Represents a key or mouse button as a string. Args: key
-     *  
-     * @param key The key to display
-     */
     public static String getKeyDisplayString(int key)
     {
         return key < 0 ? I18n.format("key.mouseButton", new Object[] {Integer.valueOf(key + 101)}): (key < 256 ? Keyboard.getKeyName(key) : String.format("%c", new Object[] {Character.valueOf((char)(key - 256))}).toUpperCase());
     }
 
-    /**
-     * Returns whether the specified key binding is currently being pressed.
-     *  
-     * @param key The key tested
-     */
     public static boolean isKeyDown(KeyBinding key)
     {
         return key.getKeyCode() == 0 ? false : (key.getKeyCode() < 0 ? Mouse.isButtonDown(key.getKeyCode() + 100) : Keyboard.isKeyDown(key.getKeyCode()));
     }
 
-    /**
-     * Sets a key binding and then saves all settings.
-     *  
-     * @param key The key that the option will be set
-     * @param keyCode The option (keycode) to set.
-     */
     public void setOptionKeyBinding(KeyBinding key, int keyCode)
     {
         key.setKeyCode(keyCode);
         this.saveOptions();
     }
 
-    /**
-     * If the specified option is controlled by a slider (float value), this will set the float value.
-     *  
-     * @param settingsOption The option to set to a value
-     * @param value The value that the option will take
-     */
     public void setOptionFloatValue(GameSettings.Options settingsOption, float value)
     {
         this.setOptionFloatValueOF(settingsOption, value);
@@ -494,12 +448,6 @@ public class GameSettings
         }
     }
 
-    /**
-     * For non-float options. Toggles the option on/off, or cycles through the list i.e. render distances.
-     *  
-     * @param settingsOption The option to set to a value
-     * @param value The value that the option will take
-     */
     public void setOptionValue(GameSettings.Options settingsOption, int value)
     {
         this.setOptionValueOF(settingsOption, value);
@@ -760,13 +708,6 @@ public class GameSettings
         }
     }
 
-    /**
-     * Returns the translation of the given index in the given String array. If the index is smaller than 0 or greater
-     * than/equal to the length of the String array, it is changed to 0.
-     *  
-     * @param strArray The array of string containing the string to translate
-     * @param index The index in the array of the string to translate
-     */
     private static String getTranslation(String[] strArray, int index)
     {
         if (index < 0 || index >= strArray.length)
@@ -777,11 +718,6 @@ public class GameSettings
         return I18n.format(strArray[index], new Object[0]);
     }
 
-    /**
-     * Gets a key binding.
-     *  
-     * @param settingOption The KeyBinding is generated from this option
-     */
     public String getKeyBinding(GameSettings.Options settingOption)
     {
         String s = this.getKeyBindingOF(settingOption);
@@ -860,9 +796,6 @@ public class GameSettings
         }
     }
 
-    /**
-     * Loads the options from the options file. It appears that this has replaced the previous 'loadOptions'
-     */
     public void loadOptions()
     {
         FileInputStream fileinputstream = null;
@@ -1278,19 +1211,11 @@ public class GameSettings
         this.loadOfOptions();
     }
 
-    /**
-     * Parses a string into a float.
-     *  
-     * @param str The string to parse
-     */
     private float parseFloat(String str)
     {
         return str.equals("true") ? 1.0F : (str.equals("false") ? 0.0F : Float.parseFloat(str));
     }
 
-    /**
-     * Saves the options to the options file.
-     */
     public void saveOptions()
     {
         if (Reflector.FMLClientHandler.exists())
@@ -1417,9 +1342,6 @@ public class GameSettings
         this.mapSoundLevels.put(sndCategory, Float.valueOf(soundLevel));
     }
 
-    /**
-     * Send a client info packet with settings information to the server
-     */
     public void sendSettingsToServer()
     {
         if (this.mc.thePlayer != null)
@@ -1468,17 +1390,11 @@ public class GameSettings
         this.sendSettingsToServer();
     }
 
-    /**
-     * Return true if the clouds should be rendered
-     */
     public int shouldRenderClouds()
     {
         return this.renderDistanceChunks >= 4 ? this.clouds : 0;
     }
 
-    /**
-     * Return true if the client connect to a server using the native transport system
-     */
     public boolean isUsingNativeTransport()
     {
         return this.useNativeTransport;

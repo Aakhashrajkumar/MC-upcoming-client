@@ -1,9 +1,7 @@
 package net.minecraft.client.renderer.tileentity;
 
-import java.util.Map;
-
 import com.google.common.collect.Maps;
-
+import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -38,14 +36,8 @@ public class TileEntityRendererDispatcher
     public Map<Class, TileEntitySpecialRenderer> mapSpecialRenderers = Maps.newHashMap();
     public static TileEntityRendererDispatcher instance = new TileEntityRendererDispatcher();
     public FontRenderer fontRenderer;
-
-    /** The player's current X position (same as playerX) */
     public static double staticPlayerX;
-
-    /** The player's current Y position (same as playerY) */
     public static double staticPlayerY;
-
-    /** The player's current Z position (same as playerZ) */
     public static double staticPlayerZ;
     public TextureManager renderEngine;
     public World worldObj;
@@ -88,7 +80,7 @@ public class TileEntityRendererDispatcher
             this.mapSpecialRenderers.put(teClass, tileentityspecialrenderer);
         }
 
-        return (TileEntitySpecialRenderer<T>)tileentityspecialrenderer;
+        return (TileEntitySpecialRenderer<T>) tileentityspecialrenderer;
     }
 
     public <T extends TileEntity> TileEntitySpecialRenderer<T> getSpecialRenderer(TileEntity tileEntityIn)
@@ -162,9 +154,6 @@ public class TileEntityRendererDispatcher
         }
     }
 
-    /**
-     * Render this TileEntity at a given set of coordinates
-     */
     public void renderTileEntityAt(TileEntity tileEntityIn, double x, double y, double z, float partialTicks)
     {
         this.renderTileEntityAt(tileEntityIn, x, y, z, partialTicks, -1);
